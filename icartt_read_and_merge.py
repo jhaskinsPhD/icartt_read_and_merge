@@ -118,21 +118,17 @@ def align2master_timeline(df: pd.DataFrame, startdt: str, enddt: str,
                          "does not contain a column 'datetime'. "))
 
     # Make datetime an index and remove duplicates.
-    print(datetime_index)
     if datetime_index is False:
-        df['datetime'] = df['datetime'].dropna()
+        df = df[df['datetime'].notna()]  # if datetime is nan drop whole row.
         df = df.set_index('datetime')  # Make the datetime an index.
-
     df = df[~df.index.duplicated()]  # remove any duplicates rows
 
     # Get the average native sampling frequency in total seconds:
     tseries = df.index.to_series()
-    tseries = tseries.dropna()
     min_sep = int(np.round(tseries.diff().mean().total_seconds()))
 
     if quiet is False:
         print('Native Mean Time Sep. (s): ', str(min_sep) + 's')
-
 
     # If the native time seperation is less than X seconds, you'll
     # reindex it to our full date range, as close to native  freq as you can,
@@ -316,9 +312,9 @@ def _pick_a_single_time_col(times: list, nn_times: dict, quiet: bool = True):
     tz_pref = tz_arr[(pref_arr == min(pref_arr))]  # Timeezone of pre time col
 
     if tz_pref == 100:
-        _exit_with_error(('Unable to ID timezone in pick_a_single_time_col()'),
+        _exit_with_error([('Unable to ID timezone in pick_a_single_time_col()'),
                          ('function.Try running the call to function with'),
-                         ('quiet=False to see debug output.'))
+                         ('quiet=False to see debug output.')])
 
     print('Pref time col:', time_pref, ' in', tz_pref,
           'Timezone') if quiet is False else None

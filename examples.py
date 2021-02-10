@@ -23,10 +23,6 @@ tm_step = 5 * 60  # Do a 5 minute average (tm_stepmust be in seconds)
 df_5min = ict.align2master_timeline(df_fancy, startdate, enddate, tm_step,
                                     quiet=False)
 
-# Convert times from UTC time to Eastern Standard Time.
-df_5min['datetime'] = df_5min['datetime'].dt.tz_convert('US/Eastern')
-
-
 # =============================================================================
 #                          "MERGE_BESIDE" example;
 # ============================================================================
